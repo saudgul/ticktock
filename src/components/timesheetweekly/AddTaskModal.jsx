@@ -1,22 +1,6 @@
 import { useState } from "react";
-
-function InfoIcon() {
-  return (
-    <span className="inline-flex items-center justify-center w-4 h-4 bg-gray-400 rounded-full text-white text-[9px] font-bold ml-1 cursor-default">
-      i
-    </span>
-  );
-}
-
-function SelectCaret() {
-  return (
-    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-500">
-      <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
-      </svg>
-    </span>
-  );
-}
+import InfoIcon from "./InfoIcon";
+import SelectCaret from "./SelectCaret";
 
 export default function AddTaskModal({ onClose, onSave, day }) {
   const [project, setProject] = useState("");
@@ -29,7 +13,14 @@ export default function AddTaskModal({ onClose, onSave, day }) {
     if (!project) return;
     setSaving(true);
     setTimeout(() => {
-      onSave({ id: Date.now(), date: day, description: desc || "New Task", hours, project });
+      onSave({
+        day,
+        date: day,
+        description: desc || "New Task",
+        hours,
+        project,
+        type,
+      });
       setSaving(false);
     }, 300);
   }

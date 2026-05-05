@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import InfoIcon from "./InfoIcon";
@@ -6,6 +6,7 @@ import EntryRowMenu from "./EntryRowMenu";
 import SelectCaret from "./SelectCaret";
 import AddTaskModal from "./AddTaskModal";
 import Footer from "../Footer";
+import API from "../../services/api";
 
 const FALLBACK_WEEK = {
     week: 4,
@@ -69,12 +70,48 @@ export default function TimesheetWeekly() {
     const selectedWeek = location.state?.week || FALLBACK_WEEK;
     const weekDays = buildWeekDays(selectedWeek.startDate, selectedWeek.endDate);
 
-    const [entries, setEntries] = useState(() => buildInitialEntries(weekDays, mode));
+    const [entries, setEntries] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [modalDay, setModalDay] = useState(null);
 
-   
-   
+    useEffect(() => {
+        let active = true;
+
+        setLoading(true);
+        setError("");
+
+        if (mode === "create") {
+            setEntries([]);
+            setLoading(false);
+            return undefined;
+        }
+
+        API.getTimesheetEntries(selectedWeek.week)
+            .then((response) => {
+                if (active) {
+                    setEntries(response.data);
+                }
+            })
+            .catch((requestError) => {
+                if (!active) {
+                    return;
+                }
+
+                setError(requestError.message || "Failed to load timesheet entries");
+                setEntries([]);
+            })
+            .finally(() => {
+                if (active) {
+                    setLoading(false);
+                }
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [mode, selectedWeek.week]);
 
     const totalHours = entries.reduce((sum, entry) => sum + (entry.hours || 0), 0);
     const maxHours = 40;
@@ -89,12 +126,16 @@ export default function TimesheetWeekly() {
     });
 
     function handleDelete(id) {
-        setEntries((prev) => prev.filter((entry) => entry.id !== id));
+        API.deleteTimesheetEntry(selectedWeek.week, id).then(() => {
+            setEntries((prev) => prev.filter((entry) => entry.id !== id));
+        });
     }
 
     function handleSave(newEntry) {
-        setEntries((prev) => [...prev, newEntry]);
-        setShowModal(false);
+        API.createTimesheetEntry(selectedWeek.week, newEntry).then((response) => {
+            setEntries((prev) => [...prev, response.data]);
+            setShowModal(false);
+        });
     }
 
     return (
@@ -127,6 +168,14 @@ export default function TimesheetWeekly() {
                             </div>
 
                             <p className="mb-8 text-sm font-normal text-gray-500">{selectedWeek.date}</p>
+
+                            {loading && (
+                                <p className="mb-6 text-sm text-gray-500">Loading entries...</p>
+                            )}
+
+                            {error && (
+                                <p className="mb-6 text-sm text-red-500">{error}</p>
+                            )}
 
                             <div className="flex flex-col gap-6">
                                 {weekDays.map((day) => {
