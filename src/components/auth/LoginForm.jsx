@@ -22,7 +22,7 @@ const LoginForm = () => {
         // Store token and user data
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.data));
-        navigate("/dashboard");
+        navigate("/timesheet");
       }
     } catch (err) {
       setError(err.message || "Login failed");

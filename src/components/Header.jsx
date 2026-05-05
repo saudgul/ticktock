@@ -32,11 +32,11 @@ const Header = ({ title = "Timesheets" }) => {
         <div className='flex gap-8 items-center'>
         <div
           className="cursor-pointer font-sans font-semibold text-2xl text-[#111928]"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/timesheet')}
         >
           ticktock
         </div>
-        <nav className=" text-sm font-medium text-[#111928]">
+        <nav className=" text-sm cursor-pointer font-medium text-[#111928]" onClick={() => navigate('/timesheet')}>
           {title}
         </nav>
         </div>

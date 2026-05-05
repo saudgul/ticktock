@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<TimesheetPage />} />
+        <Route path="/timesheet" element={<TimesheetPage />} />
         <Route path="/week" element={<TimesheetWeek />} />
       </Routes>
     </BrowserRouter>
