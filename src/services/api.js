@@ -1,9 +1,9 @@
 const mockUsers = [
   {
     id: 1,
-    email: "john@example.com",
-    password: "password123",
-    name: "John Doe",
+    email: "saud@gmail.com",
+    password: "password@123",
+    name: "Saud Gul",
   },
 ];
 

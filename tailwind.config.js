@@ -1,4 +1,7 @@
 import animate from "tailwindcss-animate";
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export default {
   darkMode: ["class"],
